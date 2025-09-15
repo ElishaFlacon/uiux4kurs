@@ -1,0 +1,30 @@
+body {
+    margin: 60mm;
+}
+
+p {
+    color: navy;
+    font-size: 12pt;
+    font-family: Arial;
+    margin-left: 50px;
+    text-align: justify;
+}
+
+h1 {
+    color: navy;
+    font-size: 18pt;
+    font-family: Tahoma;
+}
+
+h2 {
+    color: yellow;
+    font-size: 14pt;
+    font-family: Times;
+}
+
+h3 {
+    text-decoration: underline;
+    color: red;
+    font-family: Arial;
+    font-size: 12pt;
+}
