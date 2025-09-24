@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+
+<head>
+    Упражнение выполнил Соколов Елисей
+    <title>Методы ввода-вывода в JavaScript</title>
+    <script>
+        function test1(form) {
+            if (form.text1.value == "") {
+                alert("Пожалуйста, введите имя!");
+            } else {
+                alert("Hi " + form.text1.value + "! Форма заполнена корректно!");
+                let uname = prompt("Enter your name", "Anonymous");
+                document.writeln("Your name is " + uname);
+            }
+        }
+
+        function test2(form) {
+            if (form.text2.value == "") {
+                alert("Пожалуйста, введите фамилию!");
+            } else {
+                alert("Hi " + form.text2.value + "! Форма заполнена корректно!");
+            }
+        }
+
+        function test3(form) {
+            if (form.text3.value == "") {
+                alert("Пожалуйста, введите отчество!");
+            } else {
+                alert("Hi " + form.text3.value + "! Форма заполнена корректно!");
+            }
+        }
+
+        function privet(form) {
+            let fullName = "Приветствую, " + form.text2.value + " " + form.text1.value + " " + form.text3.value;
+            alert(fullName);
+        }
+
+        function resetAlert(form) {
+            alert("Очистка формы");
+            form.reset();
+        }
+    </script>
+</head>
+
+<body>
+    <form name="first">
+        Введите Ваше имя:
+        <br>
+        <input type="text" name="text1">
+        <input type="button" name="button1" value="Проверка имени" onClick="test1(this.form)">
+
+        <br>
+        <br>
+
+        Введите Вашу фамилию:<br>
+        <input type="text" name="text2">
+        <input type="button" name="button2" value="Проверка фамилии" onClick="test2(this.form)">
+
+        <br>
+        <br>
+
+        Введите Ваше отчество:<br>
+        <input type="text" name="text3">
+        <input type="button" name="button3" value="Проверка отчества" onClick="test3(this.form)">
+
+        <br>
+        <br>
+
+        <input type="button" value="Приветствие" onClick="privet(this.form)">
+
+        <br>
+        <br>
+
+        <input type="button" value="Очистить" onClick="resetAlert(this.form)">
+    </form>
+</body>
+
+</html>

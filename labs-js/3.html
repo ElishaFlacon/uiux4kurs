@@ -1,0 +1,94 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+
+<head>
+    Упражнение выполнил Соколов Елисей
+    <title>Упражнение 3. JavaScript. Циклы</title>
+    <script>
+        // Задание 1: Факториал
+        function factorial() {
+            let n = prompt("Введите число:");
+            n = parseInt(n);
+            if (isNaN(n) || n < 0) {
+                document.writeln("Введите корректное положительное число.");
+                return;
+            }
+            if (n <= 1) {
+                document.writeln("Факториал: 1");
+                return;
+            }
+            let result = 2;
+            for (let i = 3; i <= n; i++) {
+                result *= i;
+            }
+            document.writeln("Факториал: " + result);
+        }
+
+        // Задание 2: Ряд Фибоначчи без массива
+        function fibonacciNoArray() {
+            let count = prompt("Сколько чисел Фибоначчи вывести?");
+            count = parseInt(count);
+            if (isNaN(count) || count <= 0) {
+                document.writeln("Введите корректное положительное число.");
+                return;
+            }
+
+            let a = 0, b = 1;
+            document.writeln("Ряд Фибоначчи:<br>");
+            for (let i = 0; i < count; i++) {
+                document.writeln(a + "<br>");
+                let next = a + b;
+                a = b;
+                b = next;
+            }
+        }
+
+        // Задание 3: Ряд Фибоначчи до максимума (500 или пользовательский предел)
+        function fibonacciToMax() {
+            let max = prompt("Введите максимальное значение (не больше 500):");
+            max = parseInt(max);
+            if (isNaN(max) || max < 1 || max > 500) {
+                document.writeln("Введите число от 1 до 500.");
+                return;
+            }
+
+            let a = 0, b = 1;
+            document.writeln("Числа Фибоначчи до " + max + ":<br>");
+            while (a <= max) {
+                document.writeln(a + "<br>");
+                let next = a + b;
+                a = b;
+                b = next;
+            }
+        }
+
+        // Задание 4: Сумма квадратов от 1 до n
+        function sumOfSquares() {
+            let n = prompt("Введите число:");
+            n = parseInt(n);
+            if (isNaN(n) || n < 1) {
+                document.writeln("Введите корректное положительное число.");
+                return;
+            }
+
+            let sum = 0;
+            for (let i = 1; i <= n; i++) {
+                sum += i * i;
+            }
+
+            document.writeln("Сумма квадратов от 1 до " + n + ": " + sum);
+        }
+    </script>
+</head>
+
+<body>
+    <h2>Упражнение 3. JavaScript. Циклы</h2>
+    <form>
+        <input type="button" value="1. Факториал" onClick="factorial()"><br><br>
+        <input type="button" value="2. Ряд Фибоначчи без массива" onClick="fibonacciNoArray()"><br><br>
+        <input type="button" value="3. Ряд Фибоначчи до максимума (макс. 500)" onClick="fibonacciToMax()"><br><br>
+        <input type="button" value="4. Сумма квадратов" onClick="sumOfSquares()">
+    </form>
+</body>
+
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html lang="ru">
+
+<head>
+    Упражнение выполнил Соколов Елисей
+    <title>Логарифм числа</title>
+</head>
+
+<body>
+    <h3>Задача 2: Вычисление логарифма числа</h3>
+    <script>
+        // Ввод числа
+        let num = parseFloat(prompt("Введите число для вычисления натурального логарифма (ln):"));
+
+        // Проверка
+        if (isNaN(num)) {
+            document.write("Ошибка: введено не число.");
+        } else if (num <= 0) {
+            document.write("Ошибка: логарифм определён только для положительных чисел.");
+        } else {
+            document.write(`ln(${num}) = ${Math.log(num)}`);
+        }
+    </script>
+</body>
+
+</html>

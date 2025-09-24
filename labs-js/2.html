@@ -1,0 +1,30 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+
+<head>
+    Упражнение выполнил Соколов Елисей
+    <title>Кубы чисел от 1 до n</title>
+    <script>
+        function calcCubes() {
+            let input = prompt("Введите число:");
+            let n = parseFloat(input);
+
+            if (isNaN(n)) {
+                alert("Ошибка! Введите корректное число.");
+            } else {
+                let i = 1;
+                document.write("<h2>Кубы чисел от 1 до " + n + ":</h2>");
+                while (i <= n) {
+                    let cube = i * i * i;
+                    document.write(i + "³ = " + cube + "<br>");
+                    i++;
+                }
+            }
+        }
+    </script>
+</head>
+
+<body onload="calcCubes()">
+</body>
+
+</html>

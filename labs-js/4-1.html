@@ -1,0 +1,43 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html lang="ru">
+
+<head>
+    Упражнение выполнил Соколов Елисей
+    <title>Квадратное уравнение</title>
+</head>
+
+<body>
+    <h3>Задача 1: Решение квадратного уравнения</h3>
+    <script>
+        // Ввод коэффициентов
+        let a = parseFloat(prompt("Введите коэффициент a:"));
+        let b = parseFloat(prompt("Введите коэффициент b:"));
+        let c = parseFloat(prompt("Введите коэффициент c:"));
+
+        // Проверка корректности ввода
+        if (isNaN(a) || isNaN(b) || isNaN(c)) {
+            document.write("Ошибка: все коэффициенты должны быть числами.");
+        } else if (a === 0) {
+            document.write("Это не квадратное уравнение (a = 0).");
+        } else {
+            // Вычисляем дискриминант
+            let D = Math.pow(b, 2) - 4 * a * c;
+
+            document.write(`Уравнение: ${a}x² + ${b}x + ${c} = 0 <br>`);
+            document.write(`Дискриминант D = ${D} <br>`);
+
+            if (D < 0) {
+                document.write("Корней нет.");
+            } else if (D === 0) {
+                let x = -b / (2 * a);
+                document.write("Один корень: x = " + x);
+            } else {
+                let x1 = (-b + Math.sqrt(D)) / (2 * a);
+                let x2 = (-b - Math.sqrt(D)) / (2 * a);
+                document.write("Два корня: x₁ = " + x1 + ", x₂ = " + x2);
+            }
+        }
+    </script>
+</body>
+
+</html>

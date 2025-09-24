@@ -1,0 +1,72 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+
+<head>
+    Анкету составил: Соколов Елисей
+    <title>Упражнение 5</title>
+</head>
+
+<body bgcolor="lightblue" text="darkblue">
+    <basefont size="3" face="Times">
+
+    <h1>Анкета</h1>
+
+    <p>
+        Данные, представленные в настоящей анкете будут использованы для проставления зачетной по текущему практическому
+        занятию оценки.
+    </p>
+
+    <form method="GET" name="Anketa">
+        <table border="2" width="80%" align="center">
+            <tr>
+                <th colspan="2" width="50%">
+                    <font color="red">Личные данные</font>
+                </th>
+                <th colspan="2" width="50%">
+                    <font color="blue">Неличные данные</font>
+                </th>
+            </tr>
+            <tr>
+                <td width="25%">
+                    Имя:
+                    <br>
+                    Фамилия:
+                    <br>
+                    Отчество:
+                </td>
+                <td width="25%">
+                    <input type="text" name="surname">
+                    <br>
+                    <input type="text" name="name">
+                    <br>
+                    <input type="text" name="patronymic">
+                </td>
+                <td width="25%">
+                    В какой программе вы работаете?
+                    <br>
+                    <input type="checkbox" name="program" value="IE"> Internet Explorer
+                    <br>
+                    <input type="checkbox" name="program" value="Notepad"> Notepad++
+                </td>
+                <td width="25%">
+                    Вы любите информатику?
+                    <br>
+                    <input type="radio" name="like_cs" value="yes"> Да
+                    <br>
+                    <input type="radio" name="like_cs" value="no"> Нет
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" align="center">
+                    <input type="submit" value="Отправить">
+                </td>
+                <td colspan="2" align="center">
+                    <input type="reset" value="Очистить">
+                </td>
+            </tr>
+        </table>
+    </form>
+
+</body>
+
+</html>

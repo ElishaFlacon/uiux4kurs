@@ -1,0 +1,51 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+
+<head>
+    Упражнение выполнил Соколов Елисей
+    <title>Определение времени года</title>
+    <script>
+        // Запрашиваем имя
+        let name = prompt("Введите ваше имя:");
+
+        // Запрашиваем номер месяца
+        let month = parseInt(prompt("Введите номер месяца (1-12):"));
+
+        let season;
+
+        switch (month) {
+            case 12:
+            case 1:
+            case 2:
+                season = "Зима";
+                break;
+
+            case 3:
+            case 4:
+            case 5:
+                season = "Весна";
+                break;
+
+            case 6:
+            case 7:
+            case 8:
+                season = "Лето";
+                break;
+
+            case 9:
+            case 10:
+            case 11:
+                season = "Осень";
+                break;
+
+            default:
+                season = "Некорректный номер месяца!";
+        }
+
+        document.write("<h2>" + name + ", сейчас: " + season + "</h2>");
+    </script>
+</head>
+
+<body></body>
+
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+
+<head>
+    Упражнение выполнил Соколов Елисей
+    <title>Лабораторная 6. Массивы</title>
+    <script>
+        var fib = []; // глобальный массив для хранения ряда Фибоначчи
+
+        // Функция для генерации ряда Фибоначчи
+        function generateFibonacci() {
+            fib = []; // очистим массив
+
+            var n = prompt("Введите n (натуральное число, не больше 50):");
+            n = parseInt(n);
+
+            if (isNaN(n) || n <= 0 || n > 50) {
+                alert("Ошибка: нужно ввести натуральное число ≤ 50!");
+                return;
+            }
+
+            // первые члены ряда
+            fib[0] = 0;
+            fib[1] = 1;
+
+            // заполняем массив до n-го члена
+            for (var i = 2; i < n; i++) {
+                fib[i] = fib[i - 1] + fib[i - 2];
+            }
+
+            // выводим ряд
+            document.write("<h3>Ряд Фибоначчи до " + n + "-го члена:</h3>");
+            for (var j = 0; j < n; j++) {
+                document.write(j + " элемент: " + fib[j] + "<br>");
+            }
+        }
+
+        // Функция для вычисления суммы ряда
+        function sumFibonacci() {
+            if (fib.length === 0) {
+                alert("Сначала постройте ряд Фибоначчи!");
+                return;
+            }
+
+            var sum = 0;
+            for (var i = 0; i < fib.length; i++) {
+                sum += fib[i];
+            }
+
+            document.write("<h3>Сумма элементов ряда Фибоначчи:</h3>" + sum + "<br>");
+        }
+    </script>
+</head>
+
+<body>
+    <form>
+        <input type="button" value="Построить ряд Фибоначчи" onClick="generateFibonacci()">
+        <input type="button" value="Вычислить сумму ряда" onClick="sumFibonacci()">
+    </form>
+</body>
+
+</html>
