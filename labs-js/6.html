@@ -1,58 +1,354 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<html>
+<!DOCTYPE html>
+<html lang="ru">
 
 <head>
-    Упражнение выполнил Соколов Елисей
-    <title>Лабораторная 6. Массивы</title>
-    <script>
-        var fib = [];
-
-        function generateFibonacci() {
-            fib = []; // очистим массив
-
-            var n = prompt("Введите n (натуральное число, не больше 50):");
-            n = parseInt(n);
-
-            if (isNaN(n) || n <= 0 || n > 50) {
-                alert("Ошибка: нужно ввести натуральное число ≤ 50!");
-                return;
-            }
-
-            fib[0] = 0;
-            fib[1] = 1;
-
-            for (var i = 2; i < n; i++) {
-                fib[i] = fib[i - 1] + fib[i - 2];
-            }
-
-            document.getElementById("1").innerHTML = "<h3>Ряд Фибоначчи до " + n + "-го члена:</h3>"
-            for (var j = 0; j < n; j++) {
-                document.getElementById("1").append(fib[j] + " ");
-            }
+    <meta charset="UTF-8" />
+    <title>Упражнение 6 — Массивы (JS) + Доп. задания</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 10px;
         }
 
-        function sumFibonacci() {
-            if (fib.length === 0) {
-                alert("Сначала постройте ряд Фибоначчи!");
-                return;
-            }
-
-            var sum = 0;
-            for (var i = 0; i < fib.length; i++) {
-                sum += fib[i];
-            }
-            document.getElementById("2").innerHTML = "<h3>Сумма элементов ряда Фибоначчи:</h3>" + sum + "<br>";
+        th,
+        td {
+            border: 1px solid #e5e5e5;
+            padding: 6px 8px;
+            text-align: right;
         }
-    </script>
+
+        th {
+            background: #f6f6f6;
+        }
+
+        .wrap {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+    </style>
 </head>
 
 <body>
-    <form>
-        <input type="button" value="Построить ряд Фибоначчи" onClick="generateFibonacci()">
-        <input type="button" value="Вычислить сумму ряда" onClick="sumFibonacci()">
-    </form>
-    <div id="1"></div>
-    <div id="2"></div>
+    <h1>Упражнение 6 — Массивы</h1>
+
+    <!-- Задание 1–2: Фибоначчи и сумма -->
+    <section>
+        <h2>Задание 1–2: Фибоначчи и сумма</h2>
+        <p class="note">
+            Вывести ряд Фибоначчи до n‑го члена включительно (n — натуральное, n ≤ 50), и отдельной кнопкой вычислить
+            сумму всех выведенных членов.
+        </p>
+        <div class="row">
+            <label for="fibN">n (натуральное ≤ 50):</label>
+            <input id="fibN" type="number" min="1" max="50" step="1" placeholder="Напр., 10" />
+            <button id="btnFib">Показать ряд</button>
+            <button id="btnFibSum">Сумма ряда</button>
+        </div>
+        <div id="fibOut" class="out"></div>
+        <div id="fibSumOut" class="out"></div>
+    </section>
+
+    <!-- Задание 3: Таблица кусочной функции -->
+    <section>
+        <h2>Задание 3: Таблица кусочной функции</h2>
+        <p class="note">
+            Построить таблицу значений f(x) на отрезке A..B с шагом C, где f(x)= {-x при x≤0; x² при 0<x<2; 2x при x≥2};
+                шаг C ≠ 0 и согласован с направлением интервала. </p>
+                <div class="row">
+                    <label for="A">A:</label>
+                    <input id="A" type="number" step="any" placeholder="Начало" />
+                    <label for="B">B:</label>
+                    <input id="B" type="number" step="any" placeholder="Конец" />
+                    <label for="C">C (шаг):</label>
+                    <input id="C" type="number" step="any" placeholder="Шаг" />
+                    <button id="btnTable">Построить таблицу</button>
+                </div>
+                <div class="wrap">
+                    <div id="tableOut" class="out"></div>
+                    <div>
+                        <div class="row">
+                            <button id="btnPlot">Нарисовать график по точкам</button>
+                        </div>
+                        <canvas id="plotCanvas" width="720" height="360"></canvas>
+                        <div id="plotOut" class="out"></div>
+                    </div>
+                </div>
+    </section>
+
+    <!-- Самостоятельное: Время из N секунд -->
+    <section>
+        <h2>Самостоятельное: Время из N секунд</h2>
+        <p class="note">
+            С начала суток прошло N секунд; рассчитать: полные минуты, полные часы, секунды с начала последней минуты и
+            часа, минуты с начала последнего часа, а также показать время на 12‑ и 24‑часовых часах.
+        </p>
+        <div class="row">
+            <label for="Nsec">N (0–86399):</label>
+            <input id="Nsec" type="number" min="0" max="86399" step="1" placeholder="Напр., 5025" />
+            <button id="btnTime">Рассчитать</button>
+        </div>
+        <div id="timeOut" class="out mono"></div>
+    </section>
+
+    <script>
+        // ===== Задание 1–2: Фибоначчи и сумма =====
+        let lastFibArray = [];
+
+        function buildFibonacci(n) {
+            const arr = new Array(n);
+            if (n >= 1) arr[0] = 1;     // F1 = 1
+            if (n >= 2) arr[1] = 1;     // F2 = 1
+            for (let i = 2; i < n; i++) arr[i] = arr[i - 1] + arr[i - 2];
+            return arr;
+        }
+
+        function sumArray(arr) {
+            return arr.reduce((acc, v) => acc + v, 0);
+        }
+
+        document.getElementById('btnFib').addEventListener('click', () => {
+            const n = Number(document.getElementById('fibN').value);
+            const out = document.getElementById('fibOut');
+            const sumOut = document.getElementById('fibSumOut');
+
+            if (!Number.isInteger(n) || n < 1 || n > 50) {
+                out.innerHTML = '<span class="err">Ошибка: n должно быть натуральным и ≤ 50.</span>';
+                sumOut.textContent = '';
+                lastFibArray = [];
+                return;
+            }
+
+            const fib = buildFibonacci(n);
+            lastFibArray = fib.slice();
+            const sum = sumArray(fib);
+
+            out.innerHTML =
+                `<span class="ok">Ряд из ${n} членов:</span>\n` + fib.join(', ');
+            sumOut.textContent = `Сумма выведенных членов: ${sum}`;
+        });
+
+        document.getElementById('btnFibSum').addEventListener('click', () => {
+            const sumOut = document.getElementById('fibSumOut');
+            if (!lastFibArray.length) {
+                sumOut.innerHTML = '<span class="err">Сначала выведите ряд, затем запросите сумму.</span>';
+                return;
+            }
+            const sum = sumArray(lastFibArray);
+            sumOut.textContent = `Сумма выведенных членов: ${sum}`;
+        });
+
+        // ===== Задание 3: Таблица кусочной функции =====
+        function fPiecewise(x) {
+            if (x <= 0) return -x;
+            if (x < 2) return x * x;   // 0 < x < 2
+            return 2 * x;               // x >= 2
+        }
+
+        function formatNum(v) {
+            if (!isFinite(v)) return String(v);
+            const abs = Math.abs(v);
+            if (abs === 0 || (abs >= 1e-4 && abs < 1e6)) return Number(v.toFixed(6)).toString();
+            return v.toExponential(6);
+        }
+
+        let lastFXRows = []; // {i, x, y}
+
+        document.getElementById('btnTable').addEventListener('click', () => {
+            const A = Number(document.getElementById('A').value);
+            const B = Number(document.getElementById('B').value);
+            const C = Number(document.getElementById('C').value);
+            const out = document.getElementById('tableOut');
+
+            if (!isFinite(A) || !isFinite(B) || !isFinite(C) || C === 0) {
+                out.innerHTML = '<span class="err">Ошибка: A, B, C должны быть числами, C ≠ 0.</span>';
+                lastFXRows = [];
+                return;
+            }
+            if ((A < B && C < 0) || (A > B && C > 0)) {
+                out.innerHTML = '<span class="err">Знак шага C не соответствует направлению отрезка A..B.</span>';
+                lastFXRows = [];
+                return;
+            }
+
+            const rows = [];
+            let x = A;
+            const forward = C > 0;
+            let i = 0;
+            while ((forward ? x <= B + 1e-12 : x >= B - 1e-12) && i < 100000) {
+                const y = fPiecewise(x);
+                rows.push({ i, x, y });
+                x += C;
+                i++;
+            }
+            if (rows.length === 0) {
+                out.innerHTML = '<span class="err">Пустой диапазон: проверьте A, B и C.</span>';
+                lastFXRows = [];
+                return;
+            }
+
+            lastFXRows = rows;
+
+            let html = '<table><thead><tr><th>#</th><th>x</th><th>f(x)</th></tr></thead><tbody>';
+            for (const r of rows) {
+                html += `<tr><td>${r.i}</td><td>${formatNum(r.x)}</td><td>${formatNum(r.y)}</td></tr>`;
+            }
+            html += '</tbody></table>';
+            out.innerHTML = html;
+
+            // авто-обновление графика по новым точкам
+            drawGraphFromRows(lastFXRows);
+        });
+
+        // ===== Доп. задание: График по точкам (canvas) =====
+        function drawGraphFromRows(rows) {
+            const canvas = document.getElementById('plotCanvas');
+            const ctx = canvas.getContext('2d');
+            const info = document.getElementById('plotOut');
+
+            // clear
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            info.textContent = '';
+
+            if (!rows || rows.length < 2) {
+                info.innerHTML = '<span class="err">Недостаточно точек: сначала постройте таблицу.</span>';
+                return;
+            }
+
+            // bounds
+            let minX = rows[0].x, maxX = rows[0].x, minY = rows[0].y, maxY = rows[0].y;
+            for (const r of rows) {
+                if (r.x < minX) minX = r.x;
+                if (r.x > maxX) maxX = r.x;
+                if (r.y < minY) minY = r.y;
+                if (r.y > maxY) maxY = r.y;
+            }
+            // padding (10%)
+            const padX = (maxX - minX || 1) * 0.1;
+            const padY = (maxY - minY || 1) * 0.1;
+            minX -= padX; maxX += padX;
+            minY -= padY; maxY += padY;
+
+            const W = canvas.width, H = canvas.height;
+            const m = { l: 50, r: 20, t: 20, b: 40 };
+            const plotW = W - m.l - m.r;
+            const plotH = H - m.t - m.b;
+
+            const X = x => m.l + (x - minX) / (maxX - minX) * plotW;
+            const Y = y => m.t + (maxY - y) / (maxY - minY) * plotH;
+
+            // axes
+            ctx.strokeStyle = '#b0b0b0';
+            ctx.lineWidth = 1;
+
+            // grid lines (optional: 5 ticks)
+            function drawGrid() {
+                const ticks = 5;
+                ctx.font = '12px system-ui, Arial';
+                ctx.fillStyle = '#666';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'top';
+
+                for (let i = 0; i <= ticks; i++) {
+                    const tx = minX + (i / ticks) * (maxX - minX);
+                    const px = X(tx);
+                    ctx.beginPath();
+                    ctx.moveTo(px, m.t);
+                    ctx.lineTo(px, m.t + plotH);
+                    ctx.stroke();
+
+                    ctx.fillText(Number(tx.toFixed(3)).toString(), px, m.t + plotH + 6);
+                }
+
+                ctx.textAlign = 'right';
+                ctx.textBaseline = 'middle';
+                for (let j = 0; j <= ticks; j++) {
+                    const ty = minY + (j / ticks) * (maxY - minY);
+                    const py = Y(ty);
+                    ctx.beginPath();
+                    ctx.moveTo(m.l, py);
+                    ctx.lineTo(m.l + plotW, py);
+                    ctx.stroke();
+
+                    ctx.fillText(Number(ty.toFixed(3)).toString(), m.l - 6, py);
+                }
+            }
+
+            ctx.save();
+            drawGrid();
+            ctx.restore();
+
+            // axes at x=0 or y=0 if within range
+            ctx.strokeStyle = '#888';
+            ctx.lineWidth = 1.25;
+            if (minY < 0 && maxY > 0) {
+                const y0 = Y(0);
+                ctx.beginPath(); ctx.moveTo(m.l, y0); ctx.lineTo(m.l + plotW, y0); ctx.stroke();
+            }
+            if (minX < 0 && maxX > 0) {
+                const x0 = X(0);
+                ctx.beginPath(); ctx.moveTo(x0, m.t); ctx.lineTo(x0, m.t + plotH); ctx.stroke();
+            }
+
+            // plot polyline
+            ctx.strokeStyle = '#1976d2';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            for (let i = 0; i < rows.length; i++) {
+                const p = rows[i];
+                const px = X(p.x), py = Y(p.y);
+                if (i === 0) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            }
+            ctx.stroke();
+
+            info.textContent = `Отрисовано точек: ${rows.length}`;
+        }
+
+        document.getElementById('btnPlot').addEventListener('click', () => {
+            drawGraphFromRows(lastFXRows);
+        });
+
+        // ===== Самостоятельное: Время из N секунд =====
+        function pad2(n) { return String(n).padStart(2, '0'); }
+
+        document.getElementById('btnTime').addEventListener('click', () => {
+            const Nraw = document.getElementById('Nsec').value;
+            const N = Number(Nraw);
+            const out = document.getElementById('timeOut');
+
+            if (!Number.isInteger(N) || N < 0 || N >= 86400) {
+                out.innerHTML = 'Ошибка: N должно быть целым числом в диапазоне 0–86399.';
+                return;
+            }
+
+            const fullMinutes = Math.floor(N / 60);
+            const fullHours = Math.floor(N / 3600);
+            const secSinceLastMinute = N % 60;
+            const secSinceLastHour = N % 3600;
+            const minSinceLastHour = Math.floor(secSinceLastHour / 60);
+
+            const hh24 = Math.floor(N / 3600) % 24;
+            const mm = Math.floor((N % 3600) / 60);
+            const ss = N % 60;
+
+            const period = hh24 < 12 ? 'AM' : 'PM';
+            let hh12 = hh24 % 12; if (hh12 === 0) hh12 = 12;
+
+            const time24 = `${pad2(hh24)}:${pad2(mm)}:${pad2(ss)}`;
+            const time12 = `${pad2(hh12)}:${pad2(mm)}:${pad2(ss)} ${period}`;
+
+            out.textContent =
+                `Полных минут с начала суток: ${fullMinutes}\n` +
+                `Полных часов с начала суток: ${fullHours}\n` +
+                `Секунд с начала последней минуты: ${secSinceLastMinute}\n` +
+                `Секунд с начала последнего часа: ${secSinceLastHour}\n` +
+                `Минут с начала последнего часа: ${minSinceLastHour}\n` +
+                `Часы (12‑часовой формат): ${time12}\n` +
+                `Часы (24‑часовой формат): ${time24}`;
+        });
+    </script>
 </body>
 
 </html>

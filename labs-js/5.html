@@ -1,47 +1,257 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
-<html>
+<!DOCTYPE html>
+<html lang="ru">
 
 <head>
-    Упражнение выполнил Соколов Елисей
-    <title>Определение времени года</title>
-    <script>
-        let month = parseInt(prompt("Введите номер месяца (1-12):"));
-
-        let season;
-
-        switch (month) {
-            case 12:
-            case 1:
-            case 2:
-                season = "Зима";
-                break;
-
-            case 3:
-            case 4:
-            case 5:
-                season = "Весна";
-                break;
-
-            case 6:
-            case 7:
-            case 8:
-                season = "Лето";
-                break;
-
-            case 9:
-            case 10:
-            case 11:
-                season = "Осень";
-                break;
-
-            default:
-                season = "Некорректный номер месяца!";
+    <meta charset="UTF-8" />
+    <title>Упражнение 5 — Оператор выбора</title>
+    <!-- <style>
+        body {
+            font-family: system-ui, Arial, sans-serif;
+            margin: 24px;
+            line-height: 1.5;
         }
 
-        document.write("<h2>" + "Cейчас: " + season + "</h2>");
-    </script>
+        h1 {
+            margin-bottom: 0.25rem;
+        }
+
+        section {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 16px 18px;
+            margin-bottom: 18px;
+        }
+
+        .row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        input[type="number"],
+        input[type="text"] {
+            padding: 6px 8px;
+            font-size: 14px;
+            width: 200px;
+        }
+
+        button {
+            padding: 8px 12px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .out {
+            margin-top: 10px;
+            padding: 10px;
+            background: #fafafa;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            white-space: pre-wrap;
+        }
+
+        .note {
+            color: #444;
+            font-size: 13px;
+        }
+
+        code.kbd {
+            background: #f2f2f2;
+            padding: 2px 6px;
+            border-radius: 6px;
+        }
+    </style> -->
 </head>
 
-<body></body>
+<body>
+    <h1>Упражнение 5 — Оператор выбора (switch)</h1>
+
+    <!-- Пример 1 (доработанный) -->
+    <section>
+        <h2>Пример 1 (доработанный)</h2>
+        <div id="ex1" class="out">Загрузка…</div>
+    </section>
+
+    <!-- Задание 1 -->
+    <section>
+        <h2>Задание 1 — Время года по месяцу</h2>
+        <div class="row">
+            <label for="month">Номер месяца (1–12):</label>
+            <input id="month" type="number" min="1" max="12" placeholder="Напр., 3" />
+            <button id="btnSeason">Определить время года</button>
+        </div>
+        <div id="seasonOut" class="out"></div>
+    </section>
+
+    <!-- Задание 2 -->
+    <section>
+        <h2>Задание 2 — Оценка по числу K</h2>
+        <div class="row">
+            <label for="grade">Число K (1–5):</label>
+            <input id="grade" type="number" min="1" max="5" placeholder="Напр., 4" />
+            <button id="btnGrade">Показать оценку</button>
+        </div>
+        <div id="gradeOut" class="out"></div>
+    </section>
+
+    <!-- Задание 3 -->
+    <section>
+        <h2>Задание 3 — Калькулятор функции (выбор 2: sin)</h2>
+        <p class="note">
+            Вычисление синуса по ряду Тейлора с параметром точности m (m — индекс последнего слагаемого, суммирование k
+            = 0..m), с проверкой через библиотечную функцию Math.sin(x); x указывать в радианах.
+        </p>
+
+        <div class="row">
+            <label for="x">x (радианы):</label>
+            <input id="x" type="number" step="any" placeholder="Напр., 1.57079632679" />
+            <label for="m">m (целое ≥ 0):</label>
+            <input id="m" type="number" min="0" step="1" value="10" />
+            <span>Выбор функции (активно): <code class="kbd">2 — sin(x)</code></span>
+            <button id="btnSeries">Вычислить</button>
+        </div>
+
+        <div id="seriesOut" class="out"></div>
+    </section>
+
+    <script>
+        // ===================== Пример 1 (доработанный) =====================
+        (function example1() {
+            const box = document.getElementById('ex1');
+
+            // Запрос имени через prompt, как требует задание
+            let name = prompt('Введите ваше имя:', '');
+            if (!name || !name.trim()) name = 'Гость';
+
+            const dat = new Date();
+            const day = dat.getDay(); // 0 = Вс, 1 = Пн, ..., 6 = Сб
+
+            let msg;
+            switch (day) {
+                case 6: // Суббота
+                case 0: // Воскресенье
+                    msg = `Здравствуйте, ${name}! Сегодня выходной!`;
+                    break;
+                default:
+                    msg = `Здравствуйте, ${name}! Сегодня вам нужно идти на работу…`;
+            }
+
+            box.textContent = msg;
+        })();
+
+        // ===================== Задание 1 =====================
+        function seasonByMonth(month) {
+            let season;
+            switch (month) {
+                case 12:
+                case 1:
+                case 2:
+                    season = 'Зима';
+                    break;
+                case 3:
+                case 4:
+                case 5:
+                    season = 'Весна';
+                    break;
+                case 6:
+                case 7:
+                case 8:
+                    season = 'Лето';
+                    break;
+                case 9:
+                case 10:
+                case 11:
+                    season = 'Осень';
+                    break;
+                default:
+                    season = 'Ошибка: номер месяца должен быть в диапазоне 1–12';
+            }
+            return season;
+        }
+
+        document.getElementById('btnSeason').addEventListener('click', () => {
+            const value = Number(document.getElementById('month').value);
+            const result = seasonByMonth(value);
+            document.getElementById('seasonOut').textContent =
+                `Месяц: ${isNaN(value) ? '—' : value}; Результат: ${result}`;
+        });
+
+        // ===================== Задание 2 =====================
+        function gradeByK(k) {
+            let text;
+            switch (k) {
+                case 1: text = 'плохо'; break;
+                case 2: text = 'неудовлетворительно'; break;
+                case 3: text = 'удовлетворительно'; break;
+                case 4: text = 'хорошо'; break;
+                case 5: text = 'отлично'; break;
+                default: text = 'ошибка';
+            }
+            return text;
+        }
+
+        document.getElementById('btnGrade').addEventListener('click', () => {
+            const k = Number(document.getElementById('grade').value);
+            const descr = gradeByK(k);
+            document.getElementById('gradeOut').textContent =
+                `K: ${isNaN(k) ? '—' : k}; Описание: ${descr}`;
+        });
+
+        // ===================== Задание 3 (выбор 2 — sin) =====================
+        // Суммирование ряда синуса: sin(x) = sum_{k=0..m} (-1)^k * x^{2k+1} / (2k+1)!
+        function sinSeries(x, m) {
+            // Вычисляем итеративно, обновляя член ряда, чтобы избежать повторных факториалов/степеней
+            if (m < 0) return NaN;
+            let term = x;       // k=0: x^(2*0+1)/(2*0+1)! = x/1 = x
+            let sum = term;     // sum начинается с первого члена
+            for (let k = 1; k <= m; k++) {
+                // term_{k} = - term_{k-1} * x^2 / ((2k)*(2k+1))
+                term = -term * x * x / ((2 * k) * (2 * k + 1));
+                sum += term;
+            }
+            return sum;
+        }
+
+        function computeTask3() {
+            const x = Number(document.getElementById('x').value);
+            const m = Number(document.getElementById('m').value);
+            const out = document.getElementById('seriesOut');
+
+            if (!isFinite(x) || !Number.isInteger(m) || m < 0) {
+                out.textContent = 'Проверьте ввод: x — число, m — целое число m ≥ 0.';
+                return;
+            }
+
+            // Организация выбора через switch (активен только case 2)
+            const choice = 2; // по требованию: использовать выбор 2 (sin)
+            let seriesValue, mathValue, label;
+
+            switch (choice) {
+                case 2:
+                    label = 'sin(x)';
+                    seriesValue = sinSeries(x, m);
+                    mathValue = Math.sin(x);
+                    break;
+                default:
+                    label = 'Неактивно (выбран только 2 — sin)';
+                    seriesValue = NaN;
+                    mathValue = NaN;
+            }
+
+            const absErr = Math.abs(seriesValue - mathValue);
+
+            out.textContent =
+                `Функция: ${label}\n` +
+                `x = ${x}\n` +
+                `m = ${m} (последний индекс слагаемого)\n` +
+                `Ряд Тейлора: ${seriesValue}\n` +
+                `Math.${label}: ${mathValue}\n` +
+                `|ошибка| = ${absErr}`;
+        }
+
+        document.getElementById('btnSeries').addEventListener('click', computeTask3);
+    </script>
+</body>
 
 </html>

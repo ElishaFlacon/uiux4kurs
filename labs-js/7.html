@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Упражнение 7 — Строки (JS)</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <!-- <style>
+        :root {
+            color-scheme: light dark;
+            --bg: #0b0c10;
+            --card: #1f2833;
+            --text: #eaeaea;
+            --accent: #66fcf1;
+            --muted: #c5c6c7;
+            --danger: #ff4d4f;
+            --ok: #52c41a;
+            --warn: #faad14;
+            --border: #3a4750;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .wrap {
+            max-width: 920px;
+            margin: 32px auto;
+            padding: 0 16px;
+        }
+
+        h1 {
+            font-size: 22px;
+            margin: 0 0 12px;
+            color: var(--accent);
+        }
+
+        h2 {
+            font-size: 18px;
+            margin: 28px 0 8px;
+            color: var(--text);
+        }
+
+        p {
+            color: var(--muted);
+            margin: 8px 0 0;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .row>* {
+            flex: 1 1 auto;
+        }
+
+        label {
+            font-size: 14px;
+            color: var(--muted);
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: #0f141a;
+            color: var(--text);
+            outline: none;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus {
+            border-color: var(--accent);
+        }
+
+        button {
+            cursor: pointer;
+            border: 1px solid var(--border);
+            background: #0f141a;
+            color: var(--text);
+            padding: 10px 14px;
+            border-radius: 8px;
+            transition: 0.15s ease;
+            white-space: nowrap;
+        }
+
+        button:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-accent {
+            background: var(--accent);
+            color: #001b1a;
+            border-color: var(--accent);
+        }
+
+        .btn-accent:hover {
+            filter: brightness(0.95);
+            color: #001b1a;
+        }
+
+        .out {
+            margin-top: 10px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            background: #0f141a;
+            border: 1px dashed var(--border);
+            color: var(--text);
+            white-space: pre-wrap;
+            min-height: 22px;
+        }
+
+        .ok {
+            color: var(--ok);
+        }
+
+        .bad {
+            color: var(--danger);
+        }
+
+        .warn {
+            color: var(--warn);
+        }
+
+        .hint {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 6px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 12px;
+        }
+
+        .col-6 {
+            grid-column: span 6;
+            min-width: 260px;
+        }
+
+        .col-12 {
+            grid-column: span 12;
+        }
+
+        code.k {
+            color: var(--accent);
+        }
+    </style> -->
+</head>
+
+<body>
+    <div class="wrap">
+        <h1>Упражнение 7 — Строки (JS)</h1>
+        <p>Ниже реализованы задания: палиндром (с понижением регистра и удалением пробелов/знаков), проверка
+            «счастливого» билета и контрольное задание по ФИО, всё в одном HTML-файле.</p>
+
+        <!-- Задание 1 + 2: Палиндром с нормализацией -->
+        <div class="card">
+            <h2>Палиндром (задания 1–2)</h2>
+            <p class="hint">Вводите слово/фразу на любом языке; регистр будет понижен, пробелы и знаки препинания будут
+                исключены.</p>
+            <div class="grid">
+                <div class="col-12">
+                    <label for="pal-input">Текст для проверки</label>
+                    <input id="pal-input" type="text" placeholder="Например: А роза упала на лапу Азора" />
+                    <div class="hint">Можно также использовать кнопку «Проверить (prompt)», чтобы ввести текст через
+                        диалог браузера.</div>
+                </div>
+                <div class="col-12 row">
+                    <button id="pal-check" class="btn-accent">Проверить</button>
+                    <button id="pal-prompt">Проверить (prompt)</button>
+                </div>
+                <div class="col-12 out" id="pal-out"></div>
+            </div>
+        </div>
+
+        <!-- Задание 3: Счастливый билет -->
+        <div class="card">
+            <h2>Счастливый билет (задание 3)</h2>
+            <p class="hint">Введите ровно 8 цифр; билет считается «счастливым», если сумма первых 4 цифр равна сумме
+                последних 4.</p>
+            <div class="grid">
+                <div class="col-6">
+                    <label for="ticket">Номер билета (8 цифр)</label>
+                    <input id="ticket" type="text" inputmode="numeric" pattern="\d{8}"
+                        placeholder="Например: 12300642" />
+                </div>
+                <div class="col-6 row" style="align-items:flex-end">
+                    <button id="ticket-check" class="btn-accent">Проверить билет</button>
+                </div>
+                <div class="col-12 out" id="ticket-out"></div>
+            </div>
+        </div>
+
+        <!-- Контрольное задание: ФИО -->
+        <div class="card">
+            <h2>ФИО — проверка и приветствие (контрольное)</h2>
+            <p class="hint">Кнопка «Проверка» делает первую букву заглавной, остальные строчные; если в конце есть
+                пробел, он убирается.</p>
+            <div class="grid">
+                <div class="col-6">
+                    <label for="lname">Фамилия</label>
+                    <input id="lname" type="text" placeholder="Иванов" />
+                </div>
+                <div class="col-6">
+                    <label for="fname">Имя</label>
+                    <input id="fname" type="text" placeholder="Иван" />
+                </div>
+                <div class="col-6">
+                    <label for="pname">Отчество</label>
+                    <input id="pname" type="text" placeholder="Иванович" />
+                </div>
+                <div class="col-6 row" style="align-items:flex-end">
+                    <button id="fio-check">Проверка</button>
+                    <button id="fio-hi" class="btn-accent">Приветствие</button>
+                </div>
+                <div class="col-12 out" id="fio-out"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== Задания 1–2: Строковые функции и палиндром =====
+
+        // Процедура: замена заглавных букв на строчные
+        function toLowercaseAll(str) {
+            return (str ?? '').toLowerCase();
+        }
+
+        // Процедура: исключение из строки всех пробелов и знаков препинания
+        // Оставляем только буквы (латиница/кириллица) и цифры
+        function stripSpacesAndPunct(str) {
+            return (str ?? '').replace(/[^0-9A-Za-zА-Яа-яЁё]/g, '');
+        }
+
+        // Проверка палиндрома с использованием функций выше
+        function isPalindrome(str) {
+            const lowered = toLowercaseAll(str);
+            const normalized = stripSpacesAndPunct(lowered);
+            if (normalized.length === 0) return null; // нет осмысленного ввода
+            const n = normalized.length;
+            for (let i = 0; i < (n >> 1); i++) {
+                if (normalized[i] !== normalized[n - 1 - i]) return false;
+            }
+            return true;
+        }
+
+        function handlePalindromeCheck(sourceText) {
+            const out = document.getElementById('pal-out');
+            const res = isPalindrome(sourceText);
+            if (res === null) {
+                out.innerHTML = 'Введите непустой текст для проверки.';
+                out.className = 'out warn';
+                return;
+            }
+            const lowered = toLowercaseAll(sourceText);
+            const normalized = stripSpacesAndPunct(lowered);
+            const verdict = res ? '<span class="ok">палиндром</span>' : '<span class="bad">не палиндром</span>';
+            out.className = 'out';
+            out.innerHTML = [
+                `Исходный: ${sourceText || '—'}`,
+                `Нормализованный: ${normalized || '—'}`,
+                `Результат: ${verdict}`
+            ].join('\n');
+        }
+
+        document.getElementById('pal-check').addEventListener('click', () => {
+            const v = document.getElementById('pal-input').value;
+            handlePalindromeCheck(v);
+        });
+
+        document.getElementById('pal-prompt').addEventListener('click', () => {
+            const v = prompt('Введите слово или фразу:') ?? '';
+            handlePalindromeCheck(v);
+            document.getElementById('pal-input').value = v;
+        });
+
+        // ===== Задание 3: Счастливый билет (8 цифр) =====
+
+        function isLuckyTicket(numStr) {
+            const digits = (numStr ?? '').replace(/\D/g, '');
+            if (digits.length !== 8) return null; // неверный формат
+            let s1 = 0, s2 = 0;
+            for (let i = 0; i < 4; i++) s1 += digits.charCodeAt(i) - 48;
+            for (let i = 4; i < 8; i++) s2 += digits.charCodeAt(i) - 48;
+            return s1 === s2;
+        }
+
+        document.getElementById('ticket-check').addEventListener('click', () => {
+            const input = document.getElementById('ticket');
+            const out = document.getElementById('ticket-out');
+            const raw = input.value;
+            const res = isLuckyTicket(raw);
+            if (res === null) {
+                out.className = 'out warn';
+                out.textContent = 'Нужно ввести ровно 8 цифр (допустимы только 0–9).';
+                return;
+            }
+            out.className = 'out';
+            out.innerHTML = res
+                ? 'Билет — <span class="ok">счастливый</span>! Суммы первых и последних четырёх цифр совпадают.'
+                : 'Билет — <span class="bad">обычный</span>. Суммы первых и последних четырёх цифр различаются.';
+        });
+
+        // ===== Контрольное задание: Проверка ФИО и приветствие =====
+
+        // Удаляет ТОЛЬКО конечные пробелы
+        function trimEndOnly(str) { return (str ?? '').replace(/\s+$/u, ''); }
+
+        // Делает первую букву заглавной, остальные строчные, сохраняя ведущие пробелы
+        function capitalizeFirstLowerRestPreserveLeading(str) {
+            const s = trimEndOnly(str ?? '');
+            // Находим первую не-пробельную позицию
+            const m = s.match(/\S/);
+            if (!m) return s; // строка пустая или только пробелы
+            const idx = m.index;
+            // Букву по индексу -> верхний регистр, остальное -> нижний
+            return s.slice(0, idx) + s[idx].toUpperCase() + s.slice(idx + 1).toLowerCase();
+        }
+
+        function checkFIO() {
+            const ln = document.getElementById('lname');
+            const fn = document.getElementById('fname');
+            const pn = document.getElementById('pname');
+            ln.value = capitalizeFirstLowerRestPreserveLeading(ln.value);
+            fn.value = capitalizeFirstLowerRestPreserveLeading(fn.value);
+            pn.value = capitalizeFirstLowerRestPreserveLeading(pn.value);
+            const out = document.getElementById('fio-out');
+            out.className = 'out';
+            out.textContent = 'Данные отредактированы: первая буква — заглавная, остальные — строчные; конечные пробелы удалены.';
+        }
+
+        function greetFIO() {
+            const ln = trimEndOnly(document.getElementById('lname').value).trim();
+            const fn = trimEndOnly(document.getElementById('fname').value).trim();
+            const pn = trimEndOnly(document.getElementById('pname').value).trim();
+
+            const L = ln ? ln[0].toUpperCase() + ln.slice(1).toLowerCase() : '';
+            const I = fn ? fn[0].toUpperCase() : '';
+            const O = pn ? pn[0].toUpperCase() : '';
+            const short = L ? `${L} ${I}.${O}.` : '—';
+
+            const out = document.getElementById('fio-out');
+            out.className = 'out';
+            out.innerHTML = `Краткая форма: <span class="ok">${short}</span>`;
+        }
+
+        document.getElementById('fio-check').addEventListener('click', checkFIO);
+        document.getElementById('fio-hi').addEventListener('click', greetFIO);
+    </script>
+</body>
+
+</html>
