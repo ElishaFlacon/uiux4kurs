@@ -135,7 +135,6 @@ $which = $_POST['form'] ?? '';
             </div>
             <div class="actions">
                 <button type="submit">Вычислить</button>
-                <button type="reset">Сбросить</button>
             </div>
 
             <?php if ($which === '311'): ?>
@@ -194,7 +193,6 @@ $which = $_POST['form'] ?? '';
             </div>
             <div class="actions">
                 <button type="submit">Проверить</button>
-                <button type="reset">Сбросить</button>
             </div>
         </fieldset>
     </form>
@@ -242,7 +240,6 @@ $which = $_POST['form'] ?? '';
 
             <div class="actions">
                 <button type="submit">Проверить ответы</button>
-                <button type="reset">Сбросить</button>
             </div>
 
             <?php if ($which === '32'): ?>
@@ -313,7 +310,6 @@ $which = $_POST['form'] ?? '';
             </div>
             <div class="actions">
                 <button type="submit">Посчитать</button>
-                <button type="reset">Сбросить</button>
             </div>
         </fieldset>
     </form>
@@ -331,7 +327,6 @@ $which = $_POST['form'] ?? '';
             </div>
             <div class="actions">
                 <button type="submit">Построить</button>
-                <button type="reset">Сбросить</button>
             </div>
 
             <?php if ($which === '332'): ?>
@@ -376,7 +371,6 @@ $which = $_POST['form'] ?? '';
             </div>
             <div class="actions">
                 <button type="submit">Показать квадраты</button>
-                <button type="reset">Сбросить</button>
             </div>
 
             <?php if ($which === '333'): ?>

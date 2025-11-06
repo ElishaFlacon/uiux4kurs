@@ -177,7 +177,6 @@ if ($isSubmitted) {
 
         <div class="actions">
             <button type="submit">Отправить</button>
-            <button type="reset">Сбросить</button>
         </div>
     </form>
 

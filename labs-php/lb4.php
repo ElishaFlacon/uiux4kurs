@@ -298,83 +298,96 @@ $which = $_POST['form'] ?? '';
         </fieldset>
     </form>
 
-    <!-- 4.3 Работа с файлами (основная) -->
+    <!-- 4.3 Работа с файлами (кнопки по пунктам 1–4) -->
     <form method="post" action="">
         <input type="hidden" name="form" value="43">
         <fieldset>
-            <legend>Работа с файлами (папка texts)</legend>
+            <legend>4.3 — Работа с файлами (папка texts)</legend>
             <div class="row-2">
                 <div>
                     <label for="dir">Папка</label>
-                    <input type="text" id="dir" name="dir" value="<?php echo h(posted('dir', __DIR__ . DIRECTORY_SEPARATOR . 'texts')); ?>">
+                    <input type="text" id="dir" name="dir"
+                        value="<?php echo h($_POST['dir'] ?? (__DIR__ . DIRECTORY_SEPARATOR . 'texts')); ?>">
+                    <small>По умолчанию «texts» рядом со скриптом; подготовьте там несколько файлов.</small>
                 </div>
             </div>
             <div class="actions">
-                <button type="submit" name="do" value="list">Показать файлы</button>
-                <button type="submit" name="do" value="run">Выполнить</button>
+                <button type="submit" name="do" value="list">1) Показать файлы</button>
+                <button type="submit" name="do" value="del_small">2) Удалить < 10 КБ</button>
+                        <button type="submit" name="do" value="del_firstline">3) Удалить с первой строкой "to delete"</button>
+                        <button type="submit" name="do" value="append_approved">4) Дописать "approved"</button>
             </div>
 
-            <?php if ($which === '43'): ?>
+            <?php if (($which ?? ($_POST['form'] ?? '')) === '43'): ?>
                 <div class="result">
                     <?php
-                    $dir = posted('dir', __DIR__ . DIRECTORY_SEPARATOR . 'texts');
+                    $dir = $_POST['dir'] ?? (__DIR__ . DIRECTORY_SEPARATOR . 'texts');
                     if (!is_dir($dir)) {
                         echo '<p class="err">Папка не найдена: ' . h($dir) . '</p>';
                     } else {
                         $names = array_values(array_filter(scandir($dir), fn($n) => $n !== '.' && $n !== '..'));
-                        echo '<p>Найдено файлов: ' . count($names) . '</p>';
-                        if (!empty($names)) {
-                            echo '<ul>';
-                            foreach ($names as $n) echo '<li>' . h($n) . '</li>';
+                        $files = array_values(array_filter($names, fn($n) => is_file($dir . DIRECTORY_SEPARATOR . $n)));
+
+                        $action = $_POST['do'] ?? 'list';
+                        $log = [];
+
+                        if ($action === 'list') {
+                            echo '<p>Файлы:</p><ul>';
+                            foreach ($files as $n) echo '<li>' . h($n) . '</li>';
                             echo '</ul>';
                         }
 
-                        if (($_POST['do'] ?? '') === 'run') {
-                            // Проходим по файлам один раз, собирая действия
-                            $log = [];
-                            foreach ($names as $n) {
+                        if ($action === 'del_small') {
+                            foreach ($files as $n) {
                                 $path = $dir . DIRECTORY_SEPARATOR . $n;
-                                if (!is_file($path)) {
-                                    $log[] = "пропущено (не файл): $n";
-                                    continue;
-                                }
-
-                                // 2) удалить <10 КБ
                                 $sz = @filesize($path);
                                 if ($sz !== false && $sz < 10 * 1024) {
-                                    if (@unlink($path)) {
-                                        $log[] = "удалён (меньше 10 КБ): $n";
-                                    } else {
-                                        $log[] = "ошибка удаления (<10 КБ): $n";
-                                    }
-                                    continue; // уже удалён
+                                    if (@unlink($path)) $log[] = "удалён (<10КБ): $n";
+                                    else $log[] = "ошибка удаления: $n";
                                 }
+                            }
+                            echo '<p>Действия:</p><ul>';
+                            foreach ($log as $l) echo '<li>' . h($l) . '</li>';
+                            echo '</ul>';
+                            // Показать актуальный список после удаления
+                            $left = array_values(array_filter(scandir($dir), fn($n) => $n !== '.' && $n !== '..' && is_file($dir . DIRECTORY_SEPARATOR . $n)));
+                            echo '<p>Остались:</p><ul>';
+                            foreach ($left as $n) echo '<li>' . h($n) . '</li>';
+                            echo '</ul>';
+                        }
 
-                                // 3) удалить, если первая строка "to delete"
+                        if ($action === 'del_firstline') {
+                            foreach ($files as $n) {
+                                $path = $dir . DIRECTORY_SEPARATOR . $n;
                                 $fh = @fopen($path, 'r');
                                 if ($fh) {
                                     $first = fgets($fh, 4096);
                                     fclose($fh);
                                     if ($first !== false && trim(mb_strtolower($first, 'UTF-8')) === 'to delete') {
-                                        if (@unlink($path)) {
-                                            $log[] = "удалён (первая строка 'to delete'): $n";
-                                        } else {
-                                            $log[] = "ошибка удаления по первой строке: $n";
-                                        }
-                                        continue;
+                                        if (@unlink($path)) $log[] = "удалён (первая строка 'to delete'): $n";
+                                        else $log[] = "ошибка удаления: $n";
                                     }
                                 }
-
-                                // 4) дописать "approved"
-                                if (@file_put_contents($path, PHP_EOL . 'approved', FILE_APPEND) !== false) {
-                                    $log[] = "дописано 'approved': $n";
-                                } else {
-                                    $log[] = "ошибка записи 'approved': $n";
-                                }
                             }
-
                             echo '<p>Действия:</p><ul>';
-                            foreach ($log as $line) echo '<li>' . h($line) . '</li>';
+                            foreach ($log as $l) echo '<li>' . h($l) . '</li>';
+                            echo '</ul>';
+                            $left = array_values(array_filter(scandir($dir), fn($n) => $n !== '.' && $n !== '..' && is_file($dir . DIRECTORY_SEPARATOR . $n)));
+                            echo '<p>Остались:</p><ul>';
+                            foreach ($left as $n) echo '<li>' . h($n) . '</li>';
+                            echo '</ul>';
+                        }
+
+                        if ($action === 'append_approved') {
+                            foreach ($files as $n) {
+                                $path = $dir . DIRECTORY_SEPARATOR . $n;
+                                if (@file_put_contents($path, PHP_EOL . 'approved', FILE_APPEND) !== false)
+                                    $log[] = "дописано 'approved': $n";
+                                else
+                                    $log[] = "ошибка записи: $n";
+                            }
+                            echo '<p>Действия:</p><ul>';
+                            foreach ($log as $l) echo '<li>' . h($l) . '</li>';
                             echo '</ul>';
                         }
                     }

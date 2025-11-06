@@ -121,7 +121,6 @@ if (isset($_GET['preset'])) {
             <div class="actions">
                 <button type="submit" name="go" value="1">Вычислить</button>
                 <button type="submit" name="preset" value="1">Подставить x=5, y=6, z=7</button>
-                <button type="reset">Сбросить</button>
             </div>
         </fieldset>
 

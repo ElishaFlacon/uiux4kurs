@@ -121,7 +121,6 @@ $which = $_GET['form'] ?? '';
             </select>
             <div class="actions">
                 <button type="submit">Вычислить</button>
-                <button type="reset">Сбросить</button>
             </div>
 
             <?php if ($which === 'calc1'): ?>
@@ -202,7 +201,6 @@ $which = $_GET['form'] ?? '';
             </div>
             <div class="actions">
                 <button type="submit">Вычислить</button>
-                <button type="reset">Сбросить</button>
             </div>
 
             <?php if ($which === 'calc2'): ?>
