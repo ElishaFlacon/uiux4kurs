@@ -1,226 +1,244 @@
 <?php
-
-declare(strict_types=1);
-
-// Вкладка по умолчанию
-$tab = $_GET['tab'] ?? 'hello';
-
-// Для вкладки nocache отправим заголовки до вывода тела
-if ($tab === 'nocache') {
-    header('Cache-Control: no-store, no-cache, must-revalidate');
-    header('Pragma: no-cache');
-    header('Expires: 0');
+// index.php — единый файл с формой и обработкой (GET)
+function h($v)
+{
+    return htmlspecialchars((string)$v, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
 
-// Утилита безопасного html-экранирования
-function h(?string $s): string
-{
-    return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8');
+$isSubmitted = ($_SERVER['REQUEST_METHOD'] === 'GET') && !empty($_GET);
+$errors = [];
+
+if ($isSubmitted) {
+    $name = trim($_GET['name'] ?? '');
+    $last_name = trim($_GET['last_name'] ?? '');
+    $patron = trim($_GET['patron'] ?? '');
+
+    // Проверка: только буквы (русские и латинские)
+    $pattern = '/^[a-zA-Zа-яА-ЯёЁ]+$/u';
+
+    if (!preg_match($pattern, $name)) {
+        $errors[] = 'Поле "Имя" не должно содержать цифры или специальные символы.';
+    }
+    if (!preg_match($pattern, $last_name)) {
+        $errors[] = 'Поле "Фамилия" не должно содержать цифры или специальные символы.';
+    }
+    if (!preg_match($pattern, $patron)) {
+        $errors[] = 'Поле "Отчество" не должно содержать цифры или специальные символы.';
+    }
 }
 ?>
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
 
 <head>
     <meta charset="utf-8">
-    <title>Upr1 — единая страница</title>
-    <style>
+    <title>ЛР1</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <!-- <style>
         body {
-            font-family: system-ui, Arial, sans-serif;
-            margin: 20px;
-        }
-
-        nav a {
-            margin-right: 10px;
-            text-decoration: none;
-            padding: 6px 10px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            color: #222;
-        }
-
-        nav a.active {
-            background: #eef;
-            border-color: #99c;
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+            margin: 2rem;
+            line-height: 1.5;
         }
 
         form {
-            margin: 12px 0;
+            max-width: 720px;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+
+        fieldset {
+            border: 1px solid #ccc;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+        }
+
+        legend {
+            padding: 0 .5rem;
         }
 
         label {
-            display: inline-block;
-            margin: 4px 8px 4px 0;
+            display: block;
+            margin: .4rem 0 .2rem;
         }
 
-        input[type="text"],
-        input[type="number"],
-        input[type="email"] {
-            padding: 6px 8px;
+        input[type=text],
+        select {
+            width: 100%;
+            padding: .5rem;
+            border: 1px solid #bbb;
+            border-radius: 4px;
         }
 
-        pre {
-            background: #f7f7f7;
-            padding: 10px;
-            border-radius: 6px;
-            overflow: auto;
+        input.error {
+            border-color: red;
+            background: #ffe6e6;
         }
 
         .row {
-            margin: 8px 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: .75rem;
         }
-    </style>
+
+        .actions {
+            margin-top: 1rem;
+            display: flex;
+            gap: .5rem;
+        }
+
+        .result {
+            margin-top: 2rem;
+            padding: 1rem;
+            border: 1px dashed #aaa;
+            border-radius: 8px;
+            background: #fff;
+        }
+
+        .muted {
+            color: #666;
+            font-size: .95rem;
+        }
+
+        .error-message {
+            color: red;
+            margin-bottom: 1rem;
+        }
+    </style> -->
 </head>
 
 <body>
+    <h1>ЛР1</h1>
+    <form method="get" action="">
+        <fieldset>
+            <legend>Персональные данные</legend>
+            <div class="row">
+                <div>
+                    <label for="name">Имя</label>
+                    <input type="text" id="name" name="name" required
+                        value="<?php echo isset($_GET['name']) ? h($_GET['name']) : ''; ?>"
+                        class="<?php echo ($isSubmitted && isset($_GET['name']) && !preg_match('/^[a-zA-Zа-яА-ЯёЁ]+$/u', $_GET['name'])) ? 'error' : ''; ?>">
+                </div>
+                <div>
+                    <label for="last_name">Фамилия</label>
+                    <input type="text" id="last_name" name="last_name" required
+                        value="<?php echo isset($_GET['last_name']) ? h($_GET['last_name']) : ''; ?>"
+                        class="<?php echo ($isSubmitted && isset($_GET['last_name']) && !preg_match('/^[a-zA-Zа-яА-ЯёЁ]+$/u', $_GET['last_name'])) ? 'error' : ''; ?>">
+                </div>
+                <div>
+                    <label for="patron">Отчество</label>
+                    <input type="text" id="patron" name="patron" required
+                        value="<?php echo isset($_GET['patron']) ? h($_GET['patron']) : ''; ?>"
+                        class="<?php echo ($isSubmitted && isset($_GET['patron']) && !preg_match('/^[a-zA-Zа-яА-ЯёЁ]+$/u', $_GET['patron'])) ? 'error' : ''; ?>">
+                </div>
+            </div>
+        </fieldset>
 
-    <nav>
-        <a href="?tab=hello" class="<?= $tab === 'hello' ? 'active' : '' ?>">1) Привет, PHP</a>
-        <a href="?tab=vars" class="<?= $tab === 'vars' ? 'active' : '' ?>">2) Переменные/константы</a>
-        <a href="?tab=get" class="<?= $tab === 'get' ? 'active' : '' ?>">3) GET форма</a>
-        <a href="?tab=post" class="<?= $tab === 'post' ? 'active' : '' ?>">4) POST форма</a>
-        <a href="?tab=summary" class="<?= $tab === 'summary' ? 'active' : '' ?>">5) REQUEST/GET/POST/SERVER</a>
-        <a href="?tab=hidden" class="<?= $tab === 'hidden' ? 'active' : '' ?>">6) Hidden шаги</a>
-        <a href="?tab=nocache" class="<?= $tab === 'nocache' ? 'active' : '' ?>">7) No‑cache</a>
-    </nav>
+        <fieldset>
+            <legend>Программы</legend>
+            <label>
+                <input type="checkbox" name="prog1" value="IE" <?php echo (isset($_GET['prog1']) && $_GET['prog1'] === 'IE') ? 'checked' : ''; ?>>
+                IE
+            </label>
+            <label>
+                <input type="checkbox" name="prog2" value="Note" <?php echo (isset($_GET['prog2']) && $_GET['prog2'] === 'Note') ? 'checked' : ''; ?>>
+                Note
+            </label>
+        </fieldset>
 
-    <hr>
+        <fieldset>
+            <legend>Информатика</legend>
+            <label>
+                <input type="radio" name="inf" value="Y" <?php echo (isset($_GET['inf']) && $_GET['inf'] === 'Y') ? 'checked' : ''; ?>>
+                Нравится
+            </label>
+            <label>
+                <input type="radio" name="inf" value="N" <?php echo (isset($_GET['inf']) && $_GET['inf'] === 'N') ? 'checked' : ''; ?>>
+                Не нравится
+            </label>
+        </fieldset>
 
-    <?php if ($tab === 'hello'): ?>
-        <h2>Привет, PHP!</h2>
-        <?php echo "<p>Привет, PHP!</p>"; ?>
+        <fieldset>
+            <legend>Дополнительные вопросы</legend>
+            <label for="group">Группа</label>
+            <input type="text" id="group" name="group" placeholder="Например: ИВТ-101" value="<?php echo isset($_GET['group']) ? h($_GET['group']) : ''; ?>">
 
-    <?php elseif ($tab === 'vars'): ?>
-        <h2>Переменные и константы</h2>
-        <?php
-        define('APP_NAME', 'Upr1Demo');
+            <label for="level">Уровень подготовки</label>
+            <select id="level" name="level">
+                <option value="">— выберите —</option>
+                <option value="beginner" <?php echo (isset($_GET['level']) && $_GET['level'] === 'beginner') ? 'selected' : ''; ?>>Начальный</option>
+                <option value="intermediate" <?php echo (isset($_GET['level']) && $_GET['level'] === 'intermediate') ? 'selected' : ''; ?>>Средний</option>
+                <option value="advanced" <?php echo (isset($_GET['level']) && $_GET['level'] === 'advanced') ? 'selected' : ''; ?>>Продвинутый</option>
+            </select>
+        </fieldset>
 
-        $bool = true;
-        $int = 2025;
-        $float = 3.1415926535;
-        $string = "Строка";
-        $array = [1, "a", 2.5, false];
-        $obj = (object)["x" => 10, "y" => 20];
-        $null = null;
-        ?>
-        <p>APP_NAME = <?= h(APP_NAME) ?></p>
-        <pre><?php var_dump($bool, $int, $float, $string, $array, $obj, $null); ?></pre>
-
-    <?php elseif ($tab === 'get'): ?>
-        <h2>GET форма</h2>
-        <form method="get">
-            <input type="hidden" name="tab" value="get">
-            <label>Имя: <input type="text" name="name" value="<?= isset($_GET['name']) ? h($_GET['name']) : '' ?>"></label>
-            <label>Возраст: <input type="number" name="age" value="<?= isset($_GET['age']) ? h((string)$_GET['age']) : '' ?>"></label>
+        <div class="actions">
             <button type="submit">Отправить</button>
-        </form>
-
-        <?php if (count($_GET) > 1): // кроме tab 
-        ?>
-            <h3>Результат</h3>
-            <p>Имя: <?= h((string)($_GET['name'] ?? '')) ?></p>
-            <p>Возраст: <?= h((string)($_GET['age'] ?? '')) ?></p>
-            <pre>GET=<?php print_r($_GET); ?></pre>
-        <?php endif; ?>
-
-    <?php elseif ($tab === 'post'): ?>
-        <h2>POST форма</h2>
-        <form method="post">
-            <input type="hidden" name="tab" value="post">
-            <label>E-mail: <input type="email" name="email" value=""></label>
-            <label>Сообщение: <input type="text" name="message" value=""></label>
-            <button type="submit">Отправить</button>
-        </form>
-
-        <?php if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && ($_POST['tab'] ?? '') === 'post'): ?>
-            <h3>Результат</h3>
-            <p>E-mail: <?= h((string)($_POST['email'] ?? '')) ?></p>
-            <p>Сообщение: <?= h((string)($_POST['message'] ?? '')) ?></p>
-            <pre>POST=<?php print_r($_POST); ?></pre>
-        <?php endif; ?>
-
-    <?php elseif ($tab === 'summary'): ?>
-        <h2>REQUEST, GET, POST и SERVER</h2>
-
-        <div class="row"><strong>Форма GET</strong></div>
-        <form method="get">
-            <input type="hidden" name="tab" value="summary">
-            <input type="text" name="g1" placeholder="g1">
-            <input type="text" name="g2" placeholder="g2">
-            <button type="submit">Отправить GET</button>
-        </form>
-
-        <div class="row"><strong>Форма POST</strong></div>
-        <form method="post">
-            <input type="hidden" name="tab" value="summary">
-            <input type="text" name="p1" placeholder="p1">
-            <input type="text" name="p2" placeholder="p2">
-            <button type="submit">Отправить POST</button>
-        </form>
-
-        <h3>Данные</h3>
-        <pre>REQUEST:
-<?php print_r($_REQUEST); ?></pre>
-
-        <pre>GET:
-<?php print_r($_GET); ?></pre>
-
-        <pre>POST:
-<?php print_r($_POST); ?></pre>
-
-        <h3>SERVER</h3>
-        <pre><?=
-                "REQUEST_METHOD: " . ($_SERVER['REQUEST_METHOD'] ?? '') . PHP_EOL .
-                    "REMOTE_ADDR: "    . ($_SERVER['REMOTE_ADDR'] ?? '')    . PHP_EOL .
-                    "HTTP_USER_AGENT: " . ($_SERVER['HTTP_USER_AGENT'] ?? '') . PHP_EOL .
-                    "SCRIPT_NAME: "    . ($_SERVER['SCRIPT_NAME'] ?? '')    . PHP_EOL
-                ?></pre>
-
-    <?php elseif ($tab === 'hidden'): ?>
-        <h2>Hidden поле — шаги</h2>
-        <?php
-        $step = 1;
-        if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && ($_POST['tab'] ?? '') === 'hidden') {
-            $step = (int)($_POST['step'] ?? 1);
-        } else {
-            $step = (int)($_GET['step'] ?? 1);
-        }
-        if ($step < 1) $step = 1;
-        ?>
-        <p>Текущий шаг: <?= $step ?></p>
-
-        <form method="post" style="display:inline-block;margin-right:8px">
-            <input type="hidden" name="tab" value="hidden">
-            <input type="hidden" name="step" value="<?= $step + 1 ?>">
-            <button type="submit">Далее</button>
-        </form>
-
-        <?php if ($step > 1): ?>
-            <form method="post" style="display:inline-block">
-                <input type="hidden" name="tab" value="hidden">
-                <input type="hidden" name="step" value="<?= max(1, $step - 1) ?>">
-                <button type="submit">Назад</button>
-            </form>
-        <?php endif; ?>
-
-        <div class="row">
-            <form method="get" style="margin-top:10px">
-                <input type="hidden" name="tab" value="hidden">
-                <button type="submit">Сбросить</button>
-            </form>
+            <button type="reset">Сбросить</button>
         </div>
+    </form>
 
-    <?php elseif ($tab === 'nocache'): ?>
-        <h2>No‑cache заголовки</h2>
-        <p>Эта страница не кэшируется. Текущее время: <?= h(gmdate('c')) ?></p>
+    <?php if ($isSubmitted): ?>
+        <?php if (!empty($errors)): ?>
+            <div class="result error-message">
+                <h2>Ошибки:</h2>
+                <ul>
+                    <?php foreach ($errors as $e): ?>
+                        <li><?php echo h($e); ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        <?php else: ?>
+            <div class="result">
+                <h2>Результат обработки</h2>
 
-    <?php else: ?>
-        <p>Неизвестная вкладка.</p>
+                <p><strong>ФИО:</strong>
+                    <?php echo h($_GET['last_name'] ?? ''), ' ', h($_GET['name'] ?? ''), ' ', h($_GET['patron'] ?? ''); ?>
+                </p>
+
+                <p><strong>Программы:</strong>
+                    <?php
+                    $out = '';
+                    $hasP1 = isset($_GET['prog1']) && $_GET['prog1'] === 'IE';
+                    $hasP2 = isset($_GET['prog2']) && $_GET['prog2'] === 'Note';
+                    if ($hasP1) {
+                        $out .= 'IE, Chrome, Yandex';
+                    }
+                    if ($hasP1 && $hasP2) {
+                        $out .= ', plus ';
+                    }
+                    if ($hasP2) {
+                        $out .= 'Notepad++, WebStorm, VSCode';
+                    }
+                    echo $out !== '' ? h($out) : 'ничего не выбрано';
+                    ?>
+                </p>
+
+                <p><strong>Отношение к информатике:</strong>
+                    <?php
+                    if (isset($_GET['inf']) && $_GET['inf'] === 'Y') {
+                        echo 'Вам нравится информатика';
+                    } else {
+                        echo 'Вам не нравится информатика';
+                    }
+                    ?>
+                </p>
+
+                <p><strong>Группа:</strong> <?php echo h($_GET['group'] ?? '—'); ?></p>
+
+                <p><strong>Уровень подготовки:</strong>
+                    <?php
+                    $levels = ['beginner' => 'Начальный', 'intermediate' => 'Средний', 'advanced' => 'Продвинутый'];
+                    $lvl = $_GET['level'] ?? '';
+                    echo isset($levels[$lvl]) ? $levels[$lvl] : '—';
+                    ?>
+                </p>
+            </div>
+        <?php endif; ?>
     <?php endif; ?>
-
-    <hr>
-    <p style="color:#666">Upr1 — единый индекс. Переключайтесь по вкладкам сверху.</p>
-
 </body>
 
 </html>
