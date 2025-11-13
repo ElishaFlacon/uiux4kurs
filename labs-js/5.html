@@ -97,18 +97,21 @@
 
     <!-- Задание 3 -->
     <section>
-        <h2>Задание 3 — Калькулятор функции (выбор 2: sin)</h2>
-        <p class="note">
-            Вычисление синуса по ряду Тейлора с параметром точности m (m — индекс последнего слагаемого, суммирование k
-            = 0..m), с проверкой через библиотечную функцию Math.sin(x); x указывать в радианах.
-        </p>
-
+        <h2>Задание 3 — Калькулятор функции</h2>
         <div class="row">
             <label for="x">x (радианы):</label>
             <input id="x" type="number" step="any" placeholder="Напр., 1.57079632679" />
             <label for="m">m (целое ≥ 0):</label>
             <input id="m" type="number" min="0" step="1" value="10" />
-            <span>Выбор функции (активно): <code class="kbd">2 — sin(x)</code></span>
+            <span>Выбор функции:</span>
+            <label for="variant">вариант</label>
+            <select id="variant">
+                <option value="1">1: 1 − x + x^2/2! − …</option>
+                <option value="2" selected>2: sin x ряд</option>
+                <option value="3">3: cos x ряд</option>
+                <option value="4">4: 1 + x + x^2/2 + …</option>
+                <option value="5">5: arctg x ряд</option>
+            </select>
             <button id="btnSeries">Вычислить</button>
         </div>
 
@@ -213,6 +216,52 @@
             return sum;
         }
 
+        function seriesAltFactorial(x, m) {
+            if (m < 0 || !Number.isInteger(m)) return NaN;
+            let term = 1; // n=0
+            let sum = term;
+            for (let n = 1; n <= m; n++) {
+                term = -term * x / n; // (-1)^n x^n / n! из предыдущего
+                sum += term;
+            }
+            return sum;
+        }
+
+        function cosSeries(x, m) {
+            if (m < 0 || !Number.isInteger(m)) return NaN;
+            let term = 1; // k=0
+            let sum = term;
+            for (let k = 1; k <= m; k++) {
+                term = -term * x * x / ((2 * k) * (2 * k - 1));
+                sum += term;
+            }
+            return sum;
+        }
+
+        function polyDivByIndexSeries(x, m) {
+            if (m < 0 || !Number.isInteger(m)) return NaN;
+            let sum = 0;
+            let xk = 1; // x^0
+            for (let k = 0; k <= m; k++) {
+                const denom = k === 0 ? 1 : k;
+                sum += xk / denom;
+                xk *= x;
+            }
+            return sum;
+        }
+
+        function arctanSeries(x, m) {
+            if (m < 0 || !Number.isInteger(m)) return NaN;
+            let term = x; // k=0
+            let sum = term;
+            for (let k = 1; k <= m; k++) {
+                // из предыдущего терма: умножить на -x^2 и умножить на (2k-1)/(2k+1)
+                term = -term * x * x * (2 * k - 1) / (2 * k + 1);
+                sum += term;
+            }
+            return sum;
+        }
+
         function computeTask3() {
             const x = Number(document.getElementById('x').value);
             const m = Number(document.getElementById('m').value);
@@ -223,18 +272,38 @@
                 return;
             }
 
-            // Организация выбора через switch (активен только case 2)
-            const choice = 2; // по требованию: использовать выбор 2 (sin)
-            let seriesValue, mathValue, label;
+            const select = document.getElementById('variant');
+            const choice = Number(select && select.value ? select.value : 2);
 
+            let seriesValue = NaN, mathValue = NaN, label = '';
             switch (choice) {
+                case 1:
+                    label = 'S1(x) = Σ (-1)^n x^n / n!';
+                    seriesValue = seriesAltFactorial(x, m);
+                    mathValue = expNegX(x); // e^{-x}
+                    break;
                 case 2:
-                    label = 'sin(x)';
+                    label = 'sin(x) = Σ (-1)^k x^{2k+1} / (2k+1)!';
                     seriesValue = sinSeries(x, m);
                     mathValue = Math.sin(x);
                     break;
+                case 3:
+                    label = 'cos(x) = Σ (-1)^k x^{2k} / (2k)!';
+                    seriesValue = cosSeries(x, m);
+                    mathValue = Math.cos(x);
+                    break;
+                case 4:
+                    label = 'S4(x) = Σ_{k=0..m} x^k / max(1,k)';
+                    seriesValue = polyDivByIndexSeries(x, m);
+                    mathValue = NaN;
+                    break;
+                case 5:
+                    label = 'arctg(x) = Σ (-1)^k x^{2k+1} / (2k+1)';
+                    seriesValue = arctanSeries(x, m);
+                    mathValue = Math.atan(x);
+                    break;
                 default:
-                    label = 'Неактивно (выбран только 2 — sin)';
+                    label = 'неизвестный вариант';
                     seriesValue = NaN;
                     mathValue = NaN;
             }
